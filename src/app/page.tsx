@@ -1,18 +1,18 @@
-'use client'
-import { useEffect, useState } from 'react'
+'use client';
+import { useEffect, useState } from 'react';
 
 export default function UserPage() {
-  const [users, setUsers] = useState<any[]>([])
+  const [users, setUsers] = useState<any[]>([]);
 
   useEffect(() => {
     async function loadUsers() {
-      const res = await fetch('/api/users')
-      const data = await res.json()
-      setUsers(data)
+      const res = await fetch('/api/users');
+      const data = await res.json();
+      setUsers(data);
     }
 
-    loadUsers()
-  }, [])
+    loadUsers();
+  }, []);
 
   return (
     <div>
@@ -23,5 +23,5 @@ export default function UserPage() {
         ))}
       </ul>
     </div>
-  )
+  );
 }
