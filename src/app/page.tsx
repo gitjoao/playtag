@@ -2,11 +2,11 @@
 import { useEffect, useState } from 'react';
 
 export default function UserPage() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<{id: string, username: string}[]>([]);
 
   useEffect(() => {
     async function loadUsers() {
-      const res = await fetch('/api/users');
+      const res = await fetch('api/users');
       const data = await res.json();
       setUsers(data);
     }
