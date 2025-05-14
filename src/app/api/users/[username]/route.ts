@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
-export async function GET(req: Request, context: { params: { username: string } }) {
+export async function GET(_req: Request, context: { params: { username: string } }) {
   const { username } = await context.params;
 
   const { data: user, error } = await supabase
