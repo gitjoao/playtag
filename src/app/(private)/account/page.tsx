@@ -1,3 +1,7 @@
 export default function Account() {
-  return <h1>Meu perfil</h1>;
+  return (
+    <div>
+      <h1>Meu perfil</h1>
+    </div>
+  );
 }
