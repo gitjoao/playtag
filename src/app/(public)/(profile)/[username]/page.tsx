@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 
-interface Link {
+export interface Link {
   id: string
   title: string
   url: string
