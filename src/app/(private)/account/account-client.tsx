@@ -71,7 +71,7 @@ export function AccountClient({ user }: { user: User }) {
   };
 
   return (
-    <div className="">
+    <div className="mt-4">
       <div className="container">
         <div className="card p-4 shadow">
           <div className="">
@@ -120,17 +120,17 @@ export function AccountClient({ user }: { user: User }) {
                     onChange={handleChange}
                     defaultValue={valueBio}
                   ></textarea>
+                  <div className="d-flex justify-content-md-end mt-3">
+                    <button
+                      onClick={handleSave}
+                      disabled={!isModified}
+                      className={`btn btn-sm ${isModified ? 'btn-success' : 'btn-secondary'}`}
+                      style={{ color: 'white' }}
+                    >
+                      Salvar
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-2">
-                <button
-                  onClick={handleSave}
-                  disabled={!isModified}
-                  className={`btn btn-sm ${isModified ? 'btn-success' : 'btn-secondary'}`}
-                  style={{ color: 'white' }}
-                >
-                  Salvar
-                </button>
               </div>
             </div>
           </div>
