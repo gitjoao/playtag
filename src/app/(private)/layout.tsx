@@ -1,4 +1,5 @@
 import '@/app/globals.css';
+import Head from 'next/head';
 
 export default function PrivateLayout({
   children,
@@ -7,10 +8,10 @@ export default function PrivateLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`antialiased`}>
-        <h1>private</h1>
-        {children}
-      </body>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <body className={`antialiased`}>{children}</body>
     </html>
   );
 }

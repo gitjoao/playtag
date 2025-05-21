@@ -1,16 +1,16 @@
 'use client';
 
-import { Pencil, Trash2, Plus } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
-import { LinkModal } from './linkModal';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
 export type Link = {
   id: string;
   url: string;
   icon: string;
   title: string;
-  user_id: string
+  user_id: string;
 };
 
 type User = {
@@ -22,132 +22,161 @@ type User = {
 };
 
 export function AccountClient({ user }: { user: User }) {
-  const [links, setLinks] = useState(user.links);
+  const router = useRouter();
+  const links = user.links;
 
-  const handleEdit = (link: Link) => {
-    setEditingLink(link);
-    setModalOpen(true);
+  const [showModal, setShowModal] = useState(false);
+
+  const [valueBio, setValue] = useState(user.bio);
+  const [isModified, setIsModified] = useState(false);
+
+  useEffect(() => {
+    setIsModified(valueBio !== user.bio);
+  }, [valueBio, user.bio]);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleIconClick = () => {
+    fileInputRef.current?.click();
   };
 
-  const handleNew = () => {
-    setEditingLink(null);
-    setModalOpen(true);
+  const onImageUpload = (file: File) => {
+    console.log(file);
   };
 
-  const handleSave = (link: Link) => {
-
-    const updatedLink: Link = {
-        ...link,
-        id: link.id ?? crypto.randomUUID(),
-        user_id: user.id
-      }
-
-    if (link.id) {
-      // Editando
-      console.log('Editando', updatedLink)
-    } else {
-      // Criando
-      console.log('Criando', updatedLink)
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onImageUpload(file);
     }
   };
 
-  const handleDelete = (id: string) => {
-    const confirmed = confirm('Deseja realmente excluir este link?');
-    if (confirmed) {
-      setLinks((prev) => prev.filter((link) => link.id !== id));
-      // opcional: fetch para deletar no backend
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(e.target.value);
   };
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingLink, setEditingLink] = useState<Link | null>(null);
+  const id = '0de7c8a9-675b-4f3c-a9f0-6fb0ac1677cc';
+  const baseUrl = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
+
+  const handleSave = async () => {
+    const response = await fetch(`${baseUrl}/api/users`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, bio: valueBio }),
+    });
+
+    if (response.ok) {
+      router.refresh();
+    }
+  };
 
   return (
-    <div>
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
-        <div className="flex items-center gap-4">
-          <Image
-            src={user.avatar_url}
-            alt={user.username}
-            width={80}
-            height={80}
-            className="rounded-full"
-          />
-          <div>
-            <h1 className="text-2xl font-bold">{user.username}</h1>
-            <p className="text-gray-600">{user.bio}</p>
-          </div>
-        </div>
-
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">Seus links</h2>
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={handleNew}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              <Plus size={18} /> Novo Link
-            </button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full table-auto border border-gray-200 rounded-md">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="p-2 text-left">Ícone</th>
-                  <th className="p-2 text-left">Título</th>
-                  <th className="p-2 text-left">URL</th>
-                  <th className="p-2 text-center">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {links.map((link) => (
-                  <tr key={link.id} className="border-t">
-                    <td className="p-2 capitalize">{link.icon}</td>
-                    <td className="p-2">{link.title}</td>
-                    <td className="p-2">
-                      <a
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline"
-                      >
-                        {link.url}
-                      </a>
-                    </td>
-                    <td className="p-2 text-center flex gap-2 justify-center">
-                      <button
-                        onClick={() => handleEdit(link)}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <Pencil size={18} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(link.id)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {links.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className="p-4 text-center text-gray-500">
-                      Nenhum link cadastrado.
-                    </td>
-                  </tr>
+    <div className="">
+      <div className="container">
+        <div className="card p-4 shadow">
+          <div className="">
+            <div className="d-flex justify-content-center align-items-center">
+              <div
+                className="position-relative"
+                onMouseEnter={() => setShowModal(true)}
+                onMouseLeave={() => setShowModal(false)}
+                style={{ width: 100, height: 100, cursor: 'pointer' }}
+              >
+                <Image
+                  src={user.avatar_url}
+                  alt={user.username}
+                  width={100}
+                  height={100}
+                  className="rounded-circle"
+                />
+                {showModal && (
+                  <div
+                    className="position-absolute top-50 start-50 translate-middle"
+                    style={{
+                      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                      borderRadius: '50%',
+                      padding: 8,
+                      cursor: 'pointer',
+                    }}
+                    onClick={handleIconClick}
+                  >
+                    <Pencil size={20} color="#fff" />
+                  </div>
                 )}
-              </tbody>
-            </table>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
+              </div>
+              <div className="col-md-6">
+                <div className="card-body">
+                  <h5 className="card-title">{user.username}</h5>
+                  <textarea
+                    className="form-control"
+                    style={{ height: '100px' }}
+                    onChange={handleChange}
+                    defaultValue={valueBio}
+                  ></textarea>
+                </div>
+              </div>
+              <div className="col-md-2">
+                <button
+                  onClick={handleSave}
+                  disabled={!isModified}
+                  className={`btn btn-sm ${isModified ? 'btn-success' : 'btn-secondary'}`}
+                  style={{ color: 'white' }}
+                >
+                  Salvar
+                </button>
+              </div>
+            </div>
           </div>
+          <div className="d-grid gap-2 d-md-flex justify-content-md-end p-1">
+            <button className="btn btn-success btn-sm">Novo Link</button>
+          </div>
+          <table className="table table-striped">
+            <thead>
+              <tr className="">
+                <th className="">Ícone</th>
+                <th className="">Título</th>
+                <th className="">URL</th>
+                <th className=""></th>
+              </tr>
+            </thead>
+            <tbody>
+              {links.map((link) => (
+                <tr key={link.id} className="">
+                  <td className="">{link.icon}</td>
+                  <td className="">{link.title}</td>
+                  <td className="">
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">
+                      {link.url}
+                    </a>
+                  </td>
+                  <td className="d-flex justify-content-evenly">
+                    <button className="btn btn-warning btn-sm" style={{ color: 'white' }}>
+                      <Pencil size={18} />
+                    </button>
+                    <button className="btn btn-danger btn-sm">
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {links.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="p-4 text-center text-gray-500">
+                    Nenhum link cadastrado.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
-      <LinkModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        initialData={editingLink || undefined}
-        onSave={handleSave}
-      />
     </div>
   );
 }
