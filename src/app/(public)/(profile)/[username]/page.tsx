@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import { ShareButton } from './shareButton';
 
 export interface Link {
   id: string;
@@ -65,10 +66,7 @@ export default async function UserPage({ params }: { params: Promise<{ username:
                 width={32}
               />
               <span className="text-center flex-grow-1">{link.title}</span>
-
-              <span className="ms-3" style={{ fontSize: '1.2rem' }}>
-                ⋮
-              </span>
+              <ShareButton link={link.url} />
             </div>
           </a>
         ))}

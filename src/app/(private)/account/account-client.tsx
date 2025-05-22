@@ -4,6 +4,7 @@ import { Pencil, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { ModalCreateLink } from './modal-create-link';
 
 export type Link = {
   id: string;
@@ -135,7 +136,15 @@ export function AccountClient({ user }: { user: User }) {
             </div>
           </div>
           <div className="d-grid gap-2 d-md-flex justify-content-md-end p-1">
-            <button className="btn btn-success btn-sm">Novo Link</button>
+            <button
+              className="btn btn-success btn-sm"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#meuModal"
+            >
+              Novo Link
+            </button>
+            <ModalCreateLink />
           </div>
           <table className="table table-striped">
             <thead>
