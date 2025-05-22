@@ -14,7 +14,6 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
   const { id, bio } = await req.json();
-  console.log(bio)
 
   if (!id) {
     return NextResponse.json({ error: 'ID é obrigatório' }, { status: 400 });

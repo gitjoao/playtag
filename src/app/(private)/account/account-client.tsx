@@ -2,7 +2,7 @@
 
 import { Pencil, Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ModalCreateLink } from './modal-create-link';
 
@@ -166,7 +166,11 @@ export function AccountClient({ user }: { user: User }) {
                     </a>
                   </td>
                   <td className="d-flex justify-content-evenly">
-                    <button className="btn btn-warning btn-sm" style={{ color: 'white' }}>
+                    <button
+                      onClick={() => redirect(`/account/link/${link.id}`)}
+                      className="btn btn-warning btn-sm"
+                      style={{ color: 'white' }}
+                    >
                       <Pencil size={18} />
                     </button>
                     <button className="btn btn-danger btn-sm">

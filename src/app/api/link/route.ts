@@ -10,24 +10,20 @@ export async function POST(req: Request) {
     .insert([{ title, url, user_id }])
     .select()
     .single();
-    console.log(error)
+
   if (error) return NextResponse.json({ message: `Link não cadastrado` }, { status: 400 });
   return NextResponse.json({ message: 'Link criado', user: data.url }, { status: 201 });
 }
 
 export async function PUT(req: Request) {
-  const { id, bio } = await req.json();
-  console.log(bio)
+
+  const {id, title, url} = await req.json();
 
   if (!id) {
     return NextResponse.json({ error: 'ID é obrigatório' }, { status: 400 });
   }
 
-  const updates: Record<string, unknown> = {};
-
-  if (bio !== undefined) updates.bio = bio;
-
-  const { data, error } = await supabase.from('users').update(updates).eq('id', id).select();
+  const { data, error } = await supabase.from('links').update({title, url}).eq('id', id).select();
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
