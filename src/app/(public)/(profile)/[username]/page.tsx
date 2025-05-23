@@ -12,7 +12,7 @@ export interface Link {
 export default async function UserPage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
   const baseUrl = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
-  const response = await fetch(`${baseUrl}/api/users/${username}`, { cache: 'force-cache' });
+  const response = await fetch(`${baseUrl}/api/users/${username}`);
 
   if (!response.ok) return notFound();
   const { user, links } = await response.json();

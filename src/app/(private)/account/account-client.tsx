@@ -4,7 +4,7 @@ import { Pencil, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { redirect, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { ModalCreateLink } from './modal-create-link';
+import Link from 'next/link';
 
 export type Link = {
   id: string;
@@ -64,6 +64,17 @@ export function AccountClient({ user }: { user: User }) {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, bio: valueBio }),
+    });
+
+    if (response.ok) {
+      router.refresh();
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    const response = await fetch(`${baseUrl}/api/link/${id}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
     });
 
     if (response.ok) {
@@ -136,15 +147,9 @@ export function AccountClient({ user }: { user: User }) {
             </div>
           </div>
           <div className="d-grid gap-2 d-md-flex justify-content-md-end p-1">
-            <button
-              className="btn btn-success btn-sm"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#meuModal"
-            >
-              Novo Link
-            </button>
-            <ModalCreateLink />
+            <Link href="account/link/create" className="btn btn-success btn-sm">
+              novo link
+            </Link>
           </div>
           <table className="table table-striped">
             <thead>
@@ -158,7 +163,16 @@ export function AccountClient({ user }: { user: User }) {
             <tbody>
               {links.map((link) => (
                 <tr key={link.id} className="">
-                  <td className="">{link.icon}</td>
+                  <td className="">
+                    {' '}
+                    <img
+                      src={`https://cdn.simpleicons.org/${link.icon}`}
+                      alt={link.icon}
+                      className=""
+                      height={20}
+                      width={20}
+                    />
+                  </td>
                   <td className="">{link.title}</td>
                   <td className="">
                     <a href={link.url} target="_blank" rel="noopener noreferrer">
@@ -173,7 +187,7 @@ export function AccountClient({ user }: { user: User }) {
                     >
                       <Pencil size={18} />
                     </button>
-                    <button className="btn btn-danger btn-sm">
+                    <button onClick={() => handleDelete(link.id)} className="btn btn-danger btn-sm">
                       <Trash2 size={18} />
                     </button>
                   </td>

@@ -2,12 +2,12 @@ import { supabase } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-  const { title, url } = await req.json();
+  const { title, url, icon } = await req.json();
   const user_id = '0de7c8a9-675b-4f3c-a9f0-6fb0ac1677cc'
 
   const { data, error } = await supabase
     .from('links')
-    .insert([{ title, url, user_id }])
+    .insert([{ title, url, user_id, icon }])
     .select()
     .single();
 
