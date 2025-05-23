@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export interface Link {
   id: string;
@@ -12,10 +13,12 @@ export interface Link {
 }
 
 export default function LinkEditor({ link }: { link: Link }) {
+  const router = useRouter();
   const [linkEdit, setLink] = useState(link);
   const baseUrl = process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
 
-  const handleSave = async () => {
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
     const response = await fetch(`${baseUrl}/api/link`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -23,7 +26,7 @@ export default function LinkEditor({ link }: { link: Link }) {
     });
 
     if (response.ok) {
-      alert('editado com sucesso');
+      router.push('/account');
     }
   };
 
