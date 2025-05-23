@@ -17,13 +17,13 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
 
-  const {id, title, url} = await req.json();
+  const {id, title, url, icon} = await req.json();
 
   if (!id) {
     return NextResponse.json({ error: 'ID é obrigatório' }, { status: 400 });
   }
 
-  const { data, error } = await supabase.from('links').update({title, url}).eq('id', id).select();
+  const { data, error } = await supabase.from('links').update({title, url, icon}).eq('id', id).select();
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
